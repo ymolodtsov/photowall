@@ -1,0 +1,48 @@
+{{/* Standard Hugo pagination for list pages */}}
+{{ $paginator := .Paginator }}
+
+{{ if gt $paginator.TotalPages 1 }}
+<nav class="mt-12 flex justify-center" aria-label="Pagination">
+  <ul class="flex items-center space-x-1">
+    {{/* Previous */}}
+    {{ if $paginator.HasPrev }}
+    <li>
+      <a href="{{ $paginator.Prev.URL }}"
+         class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+         aria-label="Previous page">
+        &larr; Prev
+      </a>
+    </li>
+    {{ end }}
+
+    {{/* Page numbers */}}
+    {{ range $paginator.Pagers }}
+      {{ if eq . $paginator }}
+      <li>
+        <span class="px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded" aria-current="page">
+          {{ .PageNumber }}
+        </span>
+      </li>
+      {{ else }}
+      <li>
+        <a href="{{ .URL }}"
+           class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+          {{ .PageNumber }}
+        </a>
+      </li>
+      {{ end }}
+    {{ end }}
+
+    {{/* Next */}}
+    {{ if $paginator.HasNext }}
+    <li>
+      <a href="{{ $paginator.Next.URL }}"
+         class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+         aria-label="Next page">
+        Next &rarr;
+      </a>
+    </li>
+    {{ end }}
+  </ul>
+</nav>
+{{ end }}

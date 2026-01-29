@@ -1,0 +1,10 @@
+name = "Photowall"
+license = "MIT"
+licenselink = "https://github.com/yourname/photowall/blob/main/LICENSE"
+description = "A minimal photo gallery theme for Hugo"
+homepage = "https://github.com/yourname/photowall"
+min_version = "0.112.0"
+
+[author]
+name = "Your Name"
+homepage = "https://yourwebsite.com"

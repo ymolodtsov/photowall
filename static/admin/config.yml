@@ -1,0 +1,76 @@
+backend:
+  name: github
+  repo: yourusername/eternagram
+  branch: main
+
+media_folder: "content/posts"
+public_folder: ""
+
+collections:
+  - name: "posts"
+    label: "Posts"
+    folder: "content/posts"
+    path: "{{slug}}/index"
+    media_folder: ""
+    public_folder: ""
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+
+      - label: "Date"
+        name: "date"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+
+      - label: "Country"
+        name: "country"
+        widget: "string"
+        required: false
+
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        required: false
+
+      - label: "Featured Image"
+        name: "featured"
+        widget: "string"
+        required: false
+        hint: "Filename of the featured image (e.g., cover.jpg)"
+
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        hint: "Comma-separated tags"
+
+      - label: "Photos"
+        name: "photos"
+        widget: "image"
+        required: false
+        media_folder: ""
+        multiple: true
+        hint: "Upload photos for this post"
+
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        required: false
+
+  - name: "pages"
+    label: "Pages"
+    files:
+      - name: "about"
+        label: "About"
+        file: "content/about.md"
+        fields:
+          - label: "Title"
+            name: "title"
+            widget: "string"
+          - label: "Body"
+            name: "body"
+            widget: "markdown"

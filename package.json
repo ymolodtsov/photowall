@@ -1,0 +1,17 @@
+{
+  "name": "photowall",
+  "version": "1.0.0",
+  "description": "Hugo photo gallery with Tailwind CSS",
+  "scripts": {
+    "dev": "hugo server -D",
+    "build": "hugo --minify",
+    "css:build": "npx tailwindcss -i ./themes/photowall/assets/css/main.css -o ./themes/photowall/assets/css/output.css --minify",
+    "css:watch": "npx tailwindcss -i ./themes/photowall/assets/css/main.css -o ./themes/photowall/assets/css/output.css --watch"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "postcss-cli": "^11.0.0",
+    "tailwindcss": "^3.4.3"
+  }
+}

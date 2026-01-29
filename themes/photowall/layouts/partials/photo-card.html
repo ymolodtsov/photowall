@@ -1,0 +1,26 @@
+{{/* Expects a dict with "image" and "post" keys */}}
+{{ $image := .image }}
+{{ $post := .post }}
+
+{{ $thumb := $image.Resize "600x webp q80" }}
+
+<a href="{{ $post.RelPermalink }}"
+   class="photo-card block overflow-hidden rounded-lg group">
+  <div class="relative">
+    <img src="{{ $thumb.RelPermalink }}"
+         alt="{{ $post.Title }}"
+         width="{{ $thumb.Width }}"
+         height="{{ $thumb.Height }}"
+         loading="lazy"
+         class="w-full h-auto group-hover:opacity-90 transition-opacity duration-200">
+    {{/* Overlay with post info on hover */}}
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-end p-4">
+      <div class="text-white">
+        <p class="font-medium text-sm truncate">{{ $post.Title }}</p>
+        {{ with $post.Params.country }}
+        <p class="text-xs text-white/80">{{ . }}</p>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+</a>

@@ -1,0 +1,73 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description | default .Site.Title }}{{ end }}">
+
+<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+
+{{/* Preconnect for fonts */}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+{{/* Tailwind CSS via Hugo Pipes */}}
+{{ $styles := resources.Get "css/main.css" }}
+{{ $styles = $styles | css.PostCSS }}
+{{ if hugo.IsProduction }}
+  {{ $styles = $styles | minify | fingerprint }}
+{{ end }}
+<link rel="stylesheet" href="{{ $styles.RelPermalink }}">
+
+{{/* GLightbox CSS for lightbox functionality */}}
+{{ if .IsPage }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css">
+<style>
+  .glightbox-clean .gslide-description,
+  .glightbox-clean .gdesc-inner,
+  .gslide-description,
+  .gdesc-inner {
+    background: #000 !important;
+  }
+  .glightbox-clean .gslide-title,
+  .gslide-title {
+    color: #fff !important;
+  }
+  .glightbox-clean .gslide-desc,
+  .gslide-desc {
+    color: #a1a1a1 !important;
+  }
+</style>
+{{ end }}
+
+{{/* Favicon */}}
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+{{/* RSS */}}
+{{ with .OutputFormats.Get "RSS" }}
+<link rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" href="{{ .RelPermalink }}">
+{{ end }}
+
+{{/* Open Graph / Social */}}
+<meta property="og:title" content="{{ .Title | default .Site.Title }}">
+<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description | default .Site.Title }}{{ end }}">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+{{ with .Params.featured }}
+  {{ $featured := $.Resources.GetMatch . }}
+  {{ if $featured }}
+    {{ $og := $featured.Resize "1200x630 webp" }}
+    <meta property="og:image" content="{{ $og.Permalink }}">
+  {{ end }}
+{{ end }}
+
+{{/* Dark mode - automatic based on system preference */}}
+<script>
+  function updateDarkMode() {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }
+  updateDarkMode();
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateDarkMode);
+</script>

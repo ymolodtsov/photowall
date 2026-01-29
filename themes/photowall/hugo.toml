@@ -1,0 +1,5 @@
+# Gallery theme configuration
+
+[params]
+# Show thumbnail covers on the Posts list page
+showPostListThumbs = true

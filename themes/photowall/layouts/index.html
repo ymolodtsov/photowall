@@ -1,0 +1,115 @@
+{{ define "main" }}
+{{/* Aggregate all photos from all posts */}}
+{{ $allPhotos := slice }}
+{{ range where .Site.RegularPages "Section" "posts" }}
+  {{ $post := . }}
+  {{ range .Resources.ByType "image" }}
+    {{ $allPhotos = $allPhotos | append (dict "image" . "post" $post "date" $post.Date) }}
+  {{ end }}
+{{ end }}
+
+{{/* Sort by post date (newest first) */}}
+{{ $sortedPhotos := sort $allPhotos "date" "desc" }}
+{{ $totalPhotos := len $sortedPhotos }}
+{{ $photosPerPage := .Site.Params.photosPerPage | default 48 }}
+
+{{/* Calculate how many photo pages we need */}}
+{{ $totalPhotoPages := 1 }}
+{{ if gt $totalPhotos $photosPerPage }}
+  {{ $totalPhotoPages = int (math.Ceil (div (float $totalPhotos) (float $photosPerPage))) }}
+{{ end }}
+
+{{/* Get posts for pagination trick */}}
+{{ $posts := where .Site.RegularPages "Section" "posts" }}
+{{ $numPosts := len $posts }}
+
+{{/* Calculate posts per page to get the right number of pagination pages */}}
+{{ $postsPerPage := $numPosts }}
+{{ if gt $totalPhotoPages 1 }}
+  {{ $postsPerPage = int (math.Ceil (div (float $numPosts) (float $totalPhotoPages))) }}
+  {{ if lt $postsPerPage 1 }}
+    {{ $postsPerPage = 1 }}
+  {{ end }}
+{{ end }}
+
+{{/* Use Hugo's paginator on posts - this generates /page/N/ URLs */}}
+{{ $paginator := .Paginate $posts $postsPerPage }}
+{{ $currentPage := $paginator.PageNumber }}
+
+{{/* But use our photo page count for display logic */}}
+{{ $totalPages := $totalPhotoPages }}
+
+{{/* Clamp current page to valid photo pages */}}
+{{ if gt $currentPage $totalPages }}
+  {{ $currentPage = $totalPages }}
+{{ end }}
+
+{{/* Get photos for current page */}}
+{{ $start := mul (sub $currentPage 1) $photosPerPage }}
+{{ $pagePhotos := after $start $sortedPhotos | first $photosPerPage }}
+
+{{/* Photo grid with masonry layout */}}
+<div class="photo-grid">
+  {{ range $pagePhotos }}
+    {{ partial "photo-card.html" . }}
+  {{ end }}
+</div>
+
+{{/* Disable browser scroll restoration on gallery pages */}}
+<script>
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+</script>
+
+{{/* Masonry.js for horizontal-first layout (CSS columns fill vertically) */}}
+<script src="/js/masonry-grid.js"></script>
+
+{{/* Pagination */}}
+{{ if gt $totalPages 1 }}
+<nav class="mt-12 flex justify-center" aria-label="Pagination">
+  <ul class="flex items-center space-x-1">
+    {{/* Previous */}}
+    {{ if gt $currentPage 1 }}
+    <li>
+      <a href="{{ if eq (sub $currentPage 1) 1 }}/{{ else }}/page/{{ sub $currentPage 1 }}/{{ end }}"
+         class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+         aria-label="Previous page">
+        &larr; Prev
+      </a>
+    </li>
+    {{ end }}
+
+    {{/* Page numbers */}}
+    {{ range seq $totalPages }}
+      {{ if eq . $currentPage }}
+      <li>
+        <span class="px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded" aria-current="page">
+          {{ . }}
+        </span>
+      </li>
+      {{ else }}
+      <li>
+        <a href="{{ if eq . 1 }}/{{ else }}/page/{{ . }}/{{ end }}"
+           class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">
+          {{ . }}
+        </a>
+      </li>
+      {{ end }}
+    {{ end }}
+
+    {{/* Next */}}
+    {{ if lt $currentPage $totalPages }}
+    <li>
+      <a href="/page/{{ add $currentPage 1 }}/"
+         class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+         aria-label="Next page">
+        Next &rarr;
+      </a>
+    </li>
+    {{ end }}
+  </ul>
+</nav>
+{{ end }}
+{{ end }}

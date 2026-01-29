@@ -1,0 +1,60 @@
+baseURL = "/"
+languageCode = "en-us"
+title = "Photowall"
+theme = "photowall"
+
+# Pagination
+[pagination]
+pagerSize = 96
+path = "page"
+
+[params]
+photosPerPage = 96
+postsPerPage = 24
+
+# Image processing
+[imaging]
+quality = 85
+resampleFilter = "Lanczos"
+
+[imaging.exif]
+disableDate = false
+disableLatLong = true
+includeFields = ""
+excludeFields = ""
+
+# Taxonomies
+[taxonomies]
+tag = "tags"
+country = "countries"
+
+# Permalinks
+[permalinks]
+posts = "/posts/:slug/"
+
+# Build settings
+[build]
+writeStats = true
+
+# RSS
+[outputs]
+home = ["HTML", "RSS"]
+section = ["HTML", "RSS"]
+
+# Markup settings
+[markup]
+[markup.goldmark]
+[markup.goldmark.renderer]
+unsafe = true
+
+# Module mounts for Tailwind
+[module]
+[[module.mounts]]
+source = "assets"
+target = "assets"
+[[module.mounts]]
+source = "static"
+target = "static"
+[[module.mounts]]
+source = "node_modules"
+target = "assets/node_modules"
